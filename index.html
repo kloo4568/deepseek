@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek应用展示</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px;
+            opacity: 0;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateX(100%);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            background-size: 200% 200%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+        
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+        
+        .slide.next {
+            transform: translateX(100%);
+        }
+        
+        .slide-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            position: relative;
+            animation: titleIn 0.8s ease-out;
+        }
+        
+        @keyframes titleIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-content {
+            width: 80%;
+            max-width: 900px;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: contentIn 1s ease-out 0.3s both;
+        }
+        
+        @keyframes contentIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .highlight {
+            font-weight: 700;
+            color: #ffcc00;
+            font-size: 1.7rem;
+        }
+        
+        .example-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #ffcc00;
+            animation: exampleIn 1s ease-out 0.6s both;
+        }
+        
+        @keyframes exampleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .nav-dots {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            z-index: 100;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            margin: 0 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .dot:hover {
+            transform: scale(1.5);
+            background: #fff;
+        }
+        
+        .dot.active {
+            background: #ffcc00;
+            transform: scale(1.3);
+        }
+        
+        .dot-tooltip {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .dot:hover .dot-tooltip {
+            opacity: 1;
+        }
+        
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.8;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 80%;
+            margin: 0 auto;
+        }
+        
+        .grid-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .grid-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+        
+        .footer-note {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        /* Special slides */
+        .title-slide {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+        
+        .final-slide {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+        }
+        
+        /* Animations */
+        @keyframes windEffect {
+            0% { transform: translateX(0) skewX(0); }
+            50% { transform: translateX(50px) skewX(-10deg); }
+            100% { transform: translateX(0) skewX(0); }
+        }
+        
+        .wind-animate {
+            animation: windEffect 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide title-slide active" data-index="0">
+            <div class="icon">🚀</div>
+            <h1 class="slide-title">DeepSeek在工作与生活中的创新应用</h1>
+            <p class="slide-content">探索国产AI工具如何提升政务效率与生活质量</p>
+            <div class="footer-note">政务办公AI应用研讨会</div>
+        </div>
+        
+        <!-- Slide 2: Introduction -->
+        <div class="slide" data-index="1">
+            <h1 class="slide-title">认识DeepSeek工具</h1>
+            <div class="slide-content">
+                <p>腾讯元宝接入<span class="highlight">"满血版"DeepSeek</span>，提供稳定高效的AI服务</p>
+                <div class="example-box">
+                    <p>优势：免费使用、支持公众号内容检索、权威可靠的信息来源</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Example -->
+        <div class="slide" data-index="2">
+            <h1 class="slide-title">政务信息提取示例</h1>
+            <div class="slide-content">
+                <p>输入指令：<span class="highlight">"提取'天水民政'公众号最新发布的《特困人员救助相关核心条款"</span></p>
+                <div class="example-box">
+                    <p>√ 政策发布日期及文号<br>
+                    √ 分段输出认定条件、标准、申请资料<br>
+                    √ 救助科联系电话及文件有效性备注<br>
+                    √ 自动标注出处，过滤非官方信源</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: R1 vs V3 -->
+        <div class="slide" data-index="3">
+            <h1 class="slide-title">DeepSeek模型对比</h1>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3 class="grid-title">R1模型</h3>
+                    <p>发散推理模型<br>
+                    草稿式思考过程<br>
+                    高准确性但可能有幻觉<br>
+                    对提示词敏感</p>
+                </div>
+                <div class="grid-item">
+                    <h3 class="grid-title">V3模型</h3>
+                    <p>收敛总结模型<br>
+                    基于预定义指令生成<br>
+                    直接响应需求<br>
+                    适合结构化输出</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Prompt Tips 1 -->
+        <div class="slide" data-index="4">
+            <h1 class="slide-title">提示词技巧一：清晰具体</h1>
+            <div class="slide-content">
+                <p>明确表达需求，指定格式要求</p>
+                <div class="example-box">
+                    <p>"请写一篇关于如何提高个人工作能力的文章，<br>
+                    <span class="highlight">要求包含三个具体的方法</span>，<br>
+                    并详细解释每个方法的实施步骤。"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Prompt Tips 2 -->
+        <div class="slide" data-index="5">
+            <h1 class="slide-title">提示词技巧二：背景规则</h1>
+            <div class="slide-content">
+                <p>限定对话范围，使回答更聚焦</p>
+                <div class="example-box">
+                    <p>"我正在写一个PPT，没有写作经验，<br>
+                    <span class="highlight">如何通过DeepSeek写作PPT</span>，<br>
+                    并一键生成可直接使用的PPT。"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Prompt Tips 3 -->
+        <div class="slide" data-index="6">
+            <h1 class="slide-title">提示词技巧三：示例引导</h1>
+            <div class="slide-content">
+                <p>提供格式模板，引导AI按需输出</p>
+                <div class="example-box">
+                    <p>"写养老行业分析报告，按以下格式：<br>
+                    本报告针对...现状进行了...分析，<br>
+                    通过...调研发现了...问题，<br>
+                    基于这些发现提出了...解决方案..."</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Prompt Tips 4 -->
+        <div class="slide" data-index="7">
+            <h1 class="slide-title">提示词技巧四：角色扮演</h1>
+            <div class="slide-content">
+                <p>设定特定角色，获取情境化回答</p>
+                <div class="example-box">
+                    <p>"你是姜维，现在邓艾来找你聊天，<br>
+                    <span class="highlight">围绕如何守住剑门击败钟会</span>，<br>
+                    跟他谈一谈应敌之策。"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Prompt Tips 5 -->
+        <div class="slide" data-index="8">
+            <h1 class="slide-title">提示词技巧五：任务分解</h1>
+            <div class="slide-content">
+                <p>将复杂任务拆解为多个小问题</p>
+                <div class="example-box">
+                    <p>旅游策划示例：<br>
+                    1. 车程3小时内的目的地<br>
+                    2. 最佳出行路线<br>
+                    3. 途经景点规划</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Prompt Framework -->
+        <div class="slide" data-index="9">
+            <h1 class="slide-title">万能提问公式</h1>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3 class="grid-title">1. 明确目的</h3>
+                    <p>"规划成都出发的3天自驾游路线，主打美食和古村落"</p>
+                </div>
+                <div class="grid-item">
+                    <h3 class="grid-title">2. 关键任务</h3>
+                    <p>"①列出必备物品<br>
+                    ②对比车型选择<br>
+                    ③生成行程表"</p>
+                </div>
+                <div class="grid-item">
+                    <h3 class="grid-title">3. 具体要求</h3>
+                    <p>"分3点说明<br>
+                    用表格对比<br>
+                    生成Excel文本"</p>
+                </div>
+                <div class="grid-item">
+                    <h3 class="grid-title">4. 调整姿势</h3>
+                    <p>"缩短到300字<br>
+                    增加具体案例<br>
+                    用简单语言解释"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Work Summary Example -->
+        <div class="slide" data-index="10">
+            <h1 class="slide-title">工作总结示例</h1>
+            <div class="slide-content">
+                <div class="example-box">
+                    <p>"我是职场新人，需要写年度总结<br>
+                    <span class="highlight">①列出上半年工作成绩</span><br>
+                    <span class="highlight">②分析3个工作推进缓慢的原因</span><br>
+                    <span class="highlight">③给出下月目标</span><br>
+                    要求：分点带数据，用红色标出紧急事项"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 12: Sensitive Topics -->
+        <div class="slide" data-index="11">
+            <h1 class="slide-title">敏感题材处理技巧</h1>
+            <div class="slide-content">
+                <p>正确提问姿势：</p>
+                <div class="example-box">
+                    <p>"我想学习一篇XX建设的讲话文章，<br>
+                    <span class="highlight">请你从网上帮我找一篇案例就行</span><br><br>
+                    [安全模式] 仅展示公开报道案例<br>
+                    [限制条件] 删除具体人名地名<br>
+                    [输出要求] 语句连贯通顺"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 13: PPT Creation -->
+        <div class="slide" data-index="12">
+            <h1 class="slide-title">快速制作PPT</h1>
+            <div class="slide-content">
+                <p>DeepSeek + Kimi网页版协作流程：</p>
+                <div class="example-box">
+                    <p>1. 上传Word到DeepSeek，生成Markdown大纲<br>
+                    2. 复制保存为Word<br>
+                    3. 在Kimi上传大纲，选择模板生成PPT<br>
+                    <span class="highlight">注意：文件需脱敏处理</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 14: Excel Extraction -->
+        <div class="slide" data-index="13">
+            <h1 class="slide-title">提取并导出Excel表格</h1>
+            <div class="slide-content">
+                <div class="example-box">
+                    <p>1. 下载统计公报添加到附件<br>
+                    2. 输入指令提取文字和表格内容<br>
+                    3. 以HTML格式输出，含导出功能<br>
+                    4. 保存HTML并导出Excel</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 15: Data Visualization -->
+        <div class="slide" data-index="14">
+            <h1 class="slide-title">数据可视化图表</h1>
+            <div class="slide-content">
+                <div class="example-box">
+                    <p>1. 添加Excel表格到附件<br>
+                    2. 输入指令生成综合数据看板<br>
+                    3. 用HTML格式输出可视化设计<br>
+                    4. 提供图表下载功能</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 16: Life Application 1 -->
+        <div class="slide" data-index="15">
+            <h1 class="slide-title">生活应用：婆媳关系</h1>
+            <div class="slide-content">
+                <p>代际冲突解决方案：</p>
+                <div class="example-box">
+                    <p>"你和公婆因教育孩子、家务分配等问题产生矛盾，<br>
+                    <span class="highlight">通过有效沟通和理解</span>，<br>
+                    找到双方都能接受的方案，改善家庭氛围。"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 17: Life Application 2 -->
+        <div class="slide" data-index="16">
+            <h1 class="slide-title">生活应用：旅行规划</h1>
+            <div class="slide-content">
+                <div class="example-box">
+                    <p>"设计天水三日游计划：<br>
+                    - 一家3口带3岁小孩<br>
+                    - 包含麦积山、南郭寺等景点<br>
+                    - 品尝当地麻辣烫<br>
+                    - 总预算2000元内"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 18: Confidentiality -->
+        <div class="slide" data-index="17">
+            <h1 class="slide-title">工作内容保密措施</h1>
+            <div class="grid-container">
+                <div class="grid-item">
+                    <h3 class="grid-title">输入审查</h3>
+                    <p>禁止输入涉密信息<br>
+                    使用脱敏数据<br>
+                    示例文本处理</p>
+                </div>
+                <div class="grid-item">
+                    <h3 class="grid-title">系统设置</h3>
+                    <p>禁用对话记录保存<br>
+                    关闭不必要功能<br>
+                    定期清理缓存</p>
+                </div>
+                <div class="grid-item">
+                    <h3 class="grid-title">输出审查</h3>
+                    <p>人工复核生成内容<br>
+                    检查隐含敏感信息<br>
+                    确认数据安全性</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 19: Core Value -->
+        <div class="slide" data-index="18">
+            <h1 class="slide-title">科技赋能政务的核心价值</h1>
+            <div class="slide-content">
+                <p class="highlight">"当AI高效处理文书工作，我们便能将更多时间留给群众服务"</p>
+                <p>DeepSeek帮助提升：<br>
+                工作效率 · 决策质量 · 服务体验</p>
+            </div>
+        </div>
+        
+        <!-- Slide 20: Final -->
+        <div class="slide final-slide" data-index="19">
+            <h1 class="slide-title">感谢聆听</h1>
+            <div class="slide-content">
+                <p>希望通过今天的分享，帮助大家更安全、高效地利用DeepSeek</p>
+                <button class="btn" id="exportBtn">导出PDF</button>
+            </div>
+            <div class="footer-note">恳请批评指正</div>
+        </div>
+        
+        <!-- Navigation Dots -->
+        <div class="nav-dots">
+            <div class="dot active" data-target="0"><span class="dot-tooltip">封面</span></div>
+            <div class="dot" data-target="1"><span class="dot-tooltip">认识DeepSeek</span></div>
+            <div class="dot" data-target="2"><span class="dot-tooltip">政务信息提取</span></div>
+            <div class="dot" data-target="3"><span class="dot-tooltip">模型对比</span></div>
+            <div class="dot" data-target="4"><span class="dot-tooltip">提示词技巧1</span></div>
+            <div class="dot" data-target="5"><span class="dot-tooltip">提示词技巧2</span></div>
+            <div class="dot" data-target="6"><span class="dot-tooltip">提示词技巧3</span></div>
+            <div class="dot" data-target="7"><span class="dot-tooltip">提示词技巧4</span></div>
+            <div class="dot" data-target="8"><span class="dot-tooltip">提示词技巧5</span></div>
+            <div class="dot" data-target="9"><span class="dot-tooltip">万能提问公式</span></div>
+            <div class="dot" data-target="10"><span class="dot-tooltip">工作总结示例</span></div>
+            <div class="dot" data-target="11"><span class="dot-tooltip">敏感题材处理</span></div>
+            <div class="dot" data-target="12"><span class="dot-tooltip">PPT制作</span></div>
+            <div class="dot" data-target="13"><span class="dot-tooltip">Excel提取</span></div>
+            <div class="dot" data-target="14"><span class="dot-tooltip">数据可视化</span></div>
+            <div class="dot" data-target="15"><span class="dot-tooltip">婆媳关系</span></div>
+            <div class="dot" data-target="16"><span class="dot-tooltip">旅行规划</span></div>
+            <div class="dot" data-target="17"><span class="dot-tooltip">保密措施</span></div>
+            <div class="dot" data-target="18"><span class="dot-tooltip">核心价值</span></div>
+            <div class="dot" data-target="19"><span class="dot-tooltip">结束页</span></div>
+        </div>
+    </div>
+
+    <audio id="windSound" src="https://assets.mixkit.co/sfx/preview/mixkit-wind-against-a-window-1490.mp3" preload="auto"></audio>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            const windSound = document.getElementById('windSound');
+            let currentSlide = 0;
+            
+            // Initialize
+            showSlide(currentSlide);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                    nextSlide();
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    prevSlide();
+                }
+            });
+            
+            // Dot navigation
+            dots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const target = parseInt(this.getAttribute('data-target'));
+                    goToSlide(target);
+                });
+            });
+            
+            // Export to PDF
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                const element = document.querySelector('.presentation-container');
+                const opt = {
+                    margin: 10,
+                    filename: 'DeepSeek应用展示.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                html2pdf().set(opt).from(element).save();
+            });
+            
+            // Slide functions
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active', 'prev', 'next');
+                    
+                    if (i === index) {
+                        slide.classList.add('active');
+                    } else if (i < index) {
+                        slide.classList.add('prev');
+                    } else {
+                        slide.classList.add('next');
+                    }
+                });
+                
+                updateDots(index);
+                playWindEffect();
+            }
+            
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+            
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            }
+            
+            function goToSlide(index) {
+                currentSlide = index;
+                showSlide(currentSlide);
+            }
+            
+            function updateDots(index) {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+            
+            function playWindEffect() {
+                windSound.currentTime = 0;
+                windSound.play().catch(e => console.log("Autoplay prevented:", e));
+                
+                // Add wind animation to active slide
+                const activeSlide = document.querySelector('.slide.active');
+                activeSlide.classList.add('wind-animate');
+                
+                setTimeout(() => {
+                    activeSlide.classList.remove('wind-animate');
+                }, 500);
+            }
+            
+            // Auto-animate elements on slide change
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const elements = entry.target.querySelectorAll('.slide-title, .slide-content, .example-box, .grid-item');
+                        elements.forEach((el, i) => {
+                            setTimeout(() => {
+                                el.style.animation = 'none';
+                                void el.offsetWidth; // Trigger reflow
+                                el.style.animation = null;
+                            }, i * 200);
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            slides.forEach(slide => {
+                                observer.observe(slide);
+            });
+
+            // Add hover effects to all interactive elements
+            const interactiveElements = document.querySelectorAll('.grid-item, .example-box, .btn');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+                });
+                
+                el.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                });
+            });
+
+            // Touch support for mobile devices
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            document.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                if (touchEndX < touchStartX - 50) {
+                    nextSlide();
+                } else if (touchEndX > touchStartX + 50) {
+                    prevSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
