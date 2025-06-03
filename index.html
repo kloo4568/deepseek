@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DeepSeek应用展示</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
@@ -12,6 +12,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Noto Sans SC', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -19,6 +20,7 @@
             color: #fff;
             overflow: hidden;
             height: 100vh;
+            touch-action: pan-y;
         }
         
         .presentation-container {
@@ -35,13 +37,15 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 80px;
+            padding: 5vw;
             opacity: 0;
             transition: opacity 0.8s ease, transform 0.8s ease;
             transform: translateX(100%);
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             background-size: 200% 200%;
             animation: gradientBG 15s ease infinite;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         @keyframes gradientBG {
@@ -65,7 +69,7 @@
         }
         
         .slide-title {
-            font-size: 3rem;
+            font-size: clamp(1.8rem, 5vw, 3rem);
             font-weight: 700;
             margin-bottom: 2rem;
             text-align: center;
@@ -81,9 +85,9 @@
         }
         
         .slide-content {
-            width: 80%;
+            width: 90%;
             max-width: 900px;
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.5rem);
             line-height: 1.6;
             text-align: center;
             margin-bottom: 2rem;
@@ -98,7 +102,7 @@
         .highlight {
             font-weight: 700;
             color: #ffcc00;
-            font-size: 1.7rem;
+            font-size: clamp(1.1rem, 3.5vw, 1.7rem);
         }
         
         .example-box {
@@ -108,6 +112,8 @@
             margin: 20px 0;
             border-left: 5px solid #ffcc00;
             animation: exampleIn 1s ease-out 0.6s both;
+            width: 100%;
+            max-width: 800px;
         }
         
         @keyframes exampleIn {
@@ -117,22 +123,29 @@
         
         .nav-dots {
             position: fixed;
-            bottom: 30px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             z-index: 100;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 95%;
+            padding: 5px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
         }
         
         .dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: rgba(255,255,255,0.5);
-            margin: 0 8px;
+            margin: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            flex-shrink: 0;
         }
         
         .dot:hover {
@@ -158,14 +171,16 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             white-space: nowrap;
+            display: none;
         }
         
         .dot:hover .dot-tooltip {
             opacity: 1;
+            display: block;
         }
         
         .icon {
-            font-size: 4rem;
+            font-size: clamp(2.5rem, 10vw, 4rem);
             margin-bottom: 20px;
             opacity: 0.8;
             animation: iconFloat 3s ease-in-out infinite;
@@ -180,8 +195,8 @@
             background: linear-gradient(90deg, #ff8a00, #e52e71);
             border: none;
             color: white;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 12px 25px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             border-radius: 50px;
             cursor: pointer;
             margin-top: 20px;
@@ -203,17 +218,18 @@
         
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 80%;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            width: 90%;
             margin: 0 auto;
         }
         
         .grid-item {
             background: rgba(255,255,255,0.1);
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             transition: all 0.3s ease;
+            min-width: 0;
         }
         
         .grid-item:hover {
@@ -222,7 +238,7 @@
         }
         
         .grid-title {
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             margin-bottom: 10px;
             color: #ffcc00;
         }
@@ -231,7 +247,7 @@
             position: absolute;
             bottom: 10px;
             right: 20px;
-            font-size: 0.8rem;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
             opacity: 0.7;
         }
         
@@ -253,6 +269,45 @@
         
         .wind-animate {
             animation: windEffect 0.5s ease-out;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+                justify-content: flex-start;
+                padding-top: 40px;
+            }
+            
+            .example-box {
+                padding: 15px;
+            }
+            
+            .nav-dots {
+                bottom: 5px;
+            }
+            
+            .dot {
+                width: 8px;
+                height: 8px;
+                margin: 3px;
+            }
+            
+            .dot-tooltip {
+                display: none;
+            }
+            
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Prevent text selection on mobile */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
     </style>
 </head>
@@ -583,6 +638,8 @@
             const dots = document.querySelectorAll('.dot');
             const windSound = document.getElementById('windSound');
             let currentSlide = 0;
+            let touchStartX = 0;
+            let touchEndX = 0;
             
             // Initialize
             showSlide(currentSlide);
@@ -621,110 +678,110 @@
             // Slide functions
             function showSlide(index) {
                 slides.forEach((slide, i) => {
-                    slide.classList.remove('active', 'prev', 'next');
-                    
-                    if (i === index) {
-                        slide.classList.add('active');
-                    } else if (i < index) {
-                        slide.classList.add('prev');
-                    } else {
-                        slide.classList.add('next');
-                    }
-                });
+                slide.classList.remove('active', 'prev', 'next');
                 
-                updateDots(index);
-                playWindEffect();
-            }
-            
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlide(currentSlide);
-            }
-            
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                showSlide(currentSlide);
-            }
-            
-            function goToSlide(index) {
-                currentSlide = index;
-                showSlide(currentSlide);
-            }
-            
-            function updateDots(index) {
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === index);
-                });
-            }
-            
-            function playWindEffect() {
-                windSound.currentTime = 0;
-                windSound.play().catch(e => console.log("Autoplay prevented:", e));
-                
-                // Add wind animation to active slide
-                const activeSlide = document.querySelector('.slide.active');
-                activeSlide.classList.add('wind-animate');
-                
-                setTimeout(() => {
-                    activeSlide.classList.remove('wind-animate');
-                }, 500);
-            }
-            
-            // Auto-animate elements on slide change
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const elements = entry.target.querySelectorAll('.slide-title, .slide-content, .example-box, .grid-item');
-                        elements.forEach((el, i) => {
-                            setTimeout(() => {
-                                el.style.animation = 'none';
-                                void el.offsetWidth; // Trigger reflow
-                                el.style.animation = null;
-                            }, i * 200);
-                        });
-                    }
-                });
-            }, { threshold: 0.5 });
-            
-            slides.forEach(slide => {
-                                observer.observe(slide);
-            });
-
-            // Add hover effects to all interactive elements
-            const interactiveElements = document.querySelectorAll('.grid-item, .example-box, .btn');
-            interactiveElements.forEach(el => {
-                el.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.05)';
-                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
-                });
-                
-                el.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-                });
-            });
-
-            // Touch support for mobile devices
-            let touchStartX = 0;
-            let touchEndX = 0;
-            
-            document.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, false);
-            
-            document.addEventListener('touchend', e => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, false);
-            
-            function handleSwipe() {
-                if (touchEndX < touchStartX - 50) {
-                    nextSlide();
-                } else if (touchEndX > touchStartX + 50) {
-                    prevSlide();
+                if (i === index) {
+                    slide.classList.add('active');
+                } else if (i < index) {
+                    slide.classList.add('prev');
+                } else {
+                    slide.classList.add('next');
                 }
+            });
+            
+            updateDots(index);
+            playWindEffect();
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            showSlide(currentSlide);
+        }
+        
+        function updateDots(index) {
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        function playWindEffect() {
+            windSound.currentTime = 0;
+            windSound.play().catch(e => console.log("Autoplay prevented:", e));
+            
+            // Add wind animation to active slide
+            const activeSlide = document.querySelector('.slide.active');
+            activeSlide.classList.add('wind-animate');
+            
+            setTimeout(() => {
+                activeSlide.classList.remove('wind-animate');
+            }, 500);
+        }
+        
+        // Touch support for mobile devices
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            } else if (touchEndX > touchStartX + 50) {
+                prevSlide();
             }
+        }
+        
+        // Auto-animate elements on slide change
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const elements = entry.target.querySelectorAll('.slide-title, .slide-content, .example-box, .grid-item');
+                    elements.forEach((el, i) => {
+                        setTimeout(() => {
+                            el.style.animation = 'none';
+                            void el.offsetWidth; // Trigger reflow
+                            el.style.animation = null;
+                        }, i * 200);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        slides.forEach(slide => {
+            observer.observe(slide);
         });
-    </script>
-</body>
-</html>
+
+        // Add hover effects to all interactive elements
+        const interactiveElements = document.querySelectorAll('.grid-item, .example-box, .btn');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
+            });
+            
+            el.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+        });
+
+        // Prevent accidental zooming on mobile
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+    });
+</script>
